@@ -6,14 +6,14 @@ public class VoxelData
 {
     public static readonly int ChunkWidth = 5;
     public static readonly int ChunkHeight = 15;
-    public static readonly int WorldSizeInChunks = 100;
+    public static readonly int WorldSizeInChunks = 10;
 
     public static int WorldSizeInVoxels
     {
         get { return WorldSizeInChunks * ChunkWidth; }
     }
 
-    public static readonly int ViewDistanceInChunks = 5;
+    public static readonly int ViewDistanceInChunks = 1;
 
     public static readonly int TextureAtlasSizeInBlocks = 4;
     public static float NormalizedBlockTextureSize
@@ -48,13 +48,14 @@ public class VoxelData
 	};
 
 
-    public static readonly Vector3[] faceChecks = new Vector3[6] {
-        new Vector3(0.0f, 0.0f, -1.0f),
-        new Vector3(0.0f, 0.0f, 1.0f),
-        new Vector3(0.0f, 1.0f, 0.0f),
-        new Vector3(0.0f, -1.0f, 0.0f),
-        new Vector3(-1.0f, 0.0f, 0.0f),
-        new Vector3(1.0f, 0.0f, 0.0f),
+    // to check if a 
+    public static readonly Vector3[] voxelFaceDirection = new Vector3[6] {
+        new Vector3(0.0f,  0.0f, -1.0f), // Back Face
+        new Vector3(0.0f,  0.0f,  1.0f), // Front Face
+        new Vector3(0.0f,  1.0f,  0.0f), // Top Face
+        new Vector3(0.0f, -1.0f,  0.0f), // Bottom Face
+        new Vector3(-1.0f, 0.0f,  0.0f), // Left Face
+        new Vector3(1.0f,  0.0f,  0.0f), // Right Face
     };
 
 
