@@ -6,11 +6,13 @@ public class Blocks
 {
     public static Dictionary<BlockType, BlockData> blockTypes = new Dictionary<BlockType, BlockData>
         {
-            { BlockType.AIR,     new BlockData(BlockType.AIR,     false, 0, 0, 0, 0, 0, 0) },
-            { BlockType.BEDROCK, new BlockData(BlockType.BEDROCK, true,  9, 9, 9, 9, 9, 9) },
-            { BlockType.STONE,   new BlockData(BlockType.STONE,   true,  0, 0, 0, 0, 0, 0) },
-            { BlockType.GRASS,   new BlockData(BlockType.GRASS,   true,  2, 2, 7, 1, 2, 2) },
-            { BlockType.FURNACE, new BlockData(BlockType.FURNACE, true,  2, 2, 7, 1, 2, 2) }
+            { BlockType.AIR,     new BlockData(BlockType.AIR,     false, 0,  0,  0,  0,  0,  0)  },
+            { BlockType.BEDROCK, new BlockData(BlockType.BEDROCK, true,  9,  9,  9,  9,  9,  9)  },
+            { BlockType.STONE,   new BlockData(BlockType.STONE,   true,  0,  0,  0,  0,  0,  0)  },
+            { BlockType.GRASS,   new BlockData(BlockType.GRASS,   true,  2,  2,  7,  1,  2,  2)  },
+            { BlockType.FURNACE, new BlockData(BlockType.FURNACE, true,  2,  2,  7,  1,  2,  2)  },
+            { BlockType.SAND,    new BlockData(BlockType.SAND, true,  10, 10, 10, 10, 10, 10) },
+            { BlockType.DIRT,    new BlockData(BlockType.DIRT, true,  1, 1, 1, 1, 1, 1) },
         };
 
     [System.Serializable]
@@ -71,5 +73,7 @@ public class Blocks
         STONE,
         GRASS,
         FURNACE,
+        SAND,
+        DIRT,
     }
 }

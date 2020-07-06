@@ -7,6 +7,9 @@ using System.Linq;
 
 public class World : MonoBehaviour
 {
+    public int seed;
+    public BiomeAttributes biome;
+
     public Transform player;
     public Vector3 spawnPosition;
     ChunkCoord playerCurrChunkCoord;
@@ -21,6 +24,8 @@ public class World : MonoBehaviour
 
     private void Start()
     {
+        Random.InitState(seed);
+
         spawnPosition = new Vector3((VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f, VoxelData.ChunkHeight + 2f, (VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f);
         GenerateWorld();
         playerLastChunkCoord = GetChunkCoordFromVector3(player.transform.position);
@@ -88,16 +93,42 @@ public class World : MonoBehaviour
     // World generation algorithm
     public Blocks.BlockType GetVoxel(Vector3 pos)
     {
-        Blocks.BlockType blockType;
-        if (!IsVoxelInWorld(pos))
-            blockType = Blocks.BlockType.AIR;
-        else if (pos.y < 1)
-            blockType = Blocks.BlockType.BEDROCK;
-        else if (pos.y == VoxelData.ChunkHeight - 1)
-            blockType = Blocks.BlockType.GRASS;
-        else
-            blockType = Blocks.BlockType.STONE;
+        int yPos = Mathf.FloorToInt(pos.y);
 
+        /* IMMUTABLE PASS */
+        // If out of world, always return air
+        if (!IsVoxelInWorld(pos))
+            return Blocks.BlockType.AIR;
+        // Bottom is always bedrock
+        if (yPos == 0)
+            return Blocks.BlockType.BEDROCK;
+
+        /* BASIC TERRAIN PASS */
+        int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale)) + biome.solidGroundHeight;
+        Blocks.BlockType blockType = Blocks.BlockType.AIR;
+
+        if(yPos == terrainHeight) {
+            blockType = Blocks.BlockType.GRASS;
+        } else if(yPos < terrainHeight && yPos > terrainHeight - 4) {
+            blockType = Blocks.BlockType.DIRT;
+        }
+        else if(yPos > terrainHeight) {
+            return Blocks.BlockType.AIR;
+        } else {
+            blockType = Blocks.BlockType.STONE;
+        }
+
+
+        /* SECOND PASS */
+        if(blockType == Blocks.BlockType.STONE) {
+            foreach(Lode lode in biome.lodes) {
+                if(yPos > lode.minHeight && yPos < lode.maxHeight) {
+                    if(Noise.Get3DPerlin(pos, lode.noiseOffset, lode.scale, lode.threshold)) {
+                        blockType = lode.blockType;
+                    }
+                }
+            }
+        }
         return blockType;
     }
 
