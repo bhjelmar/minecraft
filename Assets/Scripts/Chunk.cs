@@ -16,7 +16,7 @@ public class Chunk
 
     int vertexIndex = 0;
 
-    Blocks.BlockType[,,] voxelMap = new Blocks.BlockType[VoxelData.ChunkWidth, VoxelData.ChunkHeight, VoxelData.ChunkWidth];
+    public Blocks.BlockType[,,] voxelMap = new Blocks.BlockType[VoxelData.ChunkWidth, VoxelData.ChunkHeight, VoxelData.ChunkWidth];
 
     World world;
 

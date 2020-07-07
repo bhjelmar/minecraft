@@ -23,17 +23,18 @@ public class Noise
         float z = (position.z + offset + 1.0f) * scale;
 
         // get all 3 permutations of nouse for x, y, and z
-        float AB = Mathf.PerlinNoise(x, y);
-        float BC = Mathf.PerlinNoise(y, z);
-        float AC = Mathf.PerlinNoise(x, z);
+        float ab = Mathf.PerlinNoise(x, y);
+        float bc = Mathf.PerlinNoise(y, z);
+        float ac = Mathf.PerlinNoise(x, z);
         
         // and their inverse...
-        float BA = Mathf.PerlinNoise(y, x);
-        float CB = Mathf.PerlinNoise(z, y);
-        float CA = Mathf.PerlinNoise(z, x);
+        float ba = Mathf.PerlinNoise(y, x);
+        float cb = Mathf.PerlinNoise(z, y);
+        float ca = Mathf.PerlinNoise(z, x);
 
         // derive 3d perlin from their average
-        return (AB + BC + AC + BA + CB + CA) / 6f > threshold;
+        float abc = ab + bc + ac + ba + cb + ca;
+        return abc / 6f > threshold;
     }
 
 }

@@ -35,9 +35,6 @@ public class VoxelData
 
     // order in which to use vertices to draw triangles to form a cube
     public static readonly int[,] voxelTris = new int[6, 4] {
-
-        // Back, Front, Top, Bottom, Left, Right
-
         // 0 1 2 2 1 3
         {0, 3, 1, 2}, // Back Face
 		{5, 6, 4, 7}, // Front Face
@@ -47,15 +44,15 @@ public class VoxelData
 		{1, 2, 5, 6}, // Right Face
 	};
 
-
-    // to check if a 
+    // is checked in same order as voxelTris
+    // see Chunk::AddVoxelDataToChunk
     public static readonly Vector3[] voxelFaceDirection = new Vector3[6] {
-        new Vector3(0.0f,  0.0f, -1.0f), // Back Face
-        new Vector3(0.0f,  0.0f,  1.0f), // Front Face
-        new Vector3(0.0f,  1.0f,  0.0f), // Top Face
-        new Vector3(0.0f, -1.0f,  0.0f), // Bottom Face
-        new Vector3(-1.0f, 0.0f,  0.0f), // Left Face
-        new Vector3(1.0f,  0.0f,  0.0f), // Right Face
+        Vector3.back,    // Back Face
+        Vector3.forward, // Front Face
+        Vector3.up,      // Top Face
+        Vector3.down,    // Bottom Face
+        Vector3.left,    // Left Face
+        Vector3.up,      // Right Face
     };
 
 

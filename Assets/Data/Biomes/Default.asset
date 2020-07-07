@@ -19,15 +19,22 @@ MonoBehaviour:
   lodes:
   - nodeName: Dirt
     blockType: 6
-    minHeight: 1
+    minHeight: 150
     maxHeight: 255
     scale: 0.1
     threshold: 0.5
     noiseOffset: 0
   - nodeName: Sand
     blockType: 5
-    minHeight: 30
-    maxHeight: 60
+    minHeight: 150
+    maxHeight: 255
+    scale: 0.2
+    threshold: 0.6
+    noiseOffset: 500
+  - nodeName: Cave
+    blockType: 0
+    minHeight: 0
+    maxHeight: 255
     scale: 0.2
     threshold: 0.6
     noiseOffset: 500

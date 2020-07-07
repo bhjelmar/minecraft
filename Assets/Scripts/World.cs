@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Unity.Jobs;
 using System.Linq;
 
+// TODO: generating cave systems dont draw voxel correctly on the -x axis
+// TODO: fov calculation is off by 1
+
 public class World : MonoBehaviour
 {
     public int seed;
@@ -25,9 +28,10 @@ public class World : MonoBehaviour
     private void Start()
     {
         Random.InitState(seed);
+        GenerateWorld();
 
         spawnPosition = new Vector3((VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f, VoxelData.ChunkHeight + 2f, (VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f);
-        GenerateWorld();
+        player.transform.position = spawnPosition;
         playerLastChunkCoord = GetChunkCoordFromVector3(player.transform.position);
     }
 
@@ -35,8 +39,8 @@ public class World : MonoBehaviour
     {
         playerCurrChunkCoord = GetChunkCoordFromVector3(player.position);
 
-        if (!playerCurrChunkCoord.Equals(playerLastChunkCoord))
-            CheckViewDistance();
+        // if (!playerCurrChunkCoord.Equals(playerLastChunkCoord))
+        // CheckViewDistance();
 
         playerLastChunkCoord = playerCurrChunkCoord;
     }
@@ -51,7 +55,6 @@ public class World : MonoBehaviour
             }
 
         }
-        player.transform.position = spawnPosition;
     }
 
     ChunkCoord GetChunkCoordFromVector3(Vector3 pos)
@@ -90,6 +93,27 @@ public class World : MonoBehaviour
     }
 
 
+    public bool checkForVoxel(float x, float y, float z)
+    {
+        int xCheck = Mathf.FloorToInt(x);
+        int yCheck = Mathf.FloorToInt(y);
+        int zCheck = Mathf.FloorToInt(z);
+
+        int xChunk = xCheck / VoxelData.ChunkWidth;
+        int zChunk = zCheck / VoxelData.ChunkWidth;
+
+        // value within chunk, passed values are global
+        xCheck -= (xChunk * VoxelData.ChunkWidth);
+        zCheck -= (zChunk * VoxelData.ChunkWidth);
+
+        var chunk = chunks[xChunk, zChunk];
+        var blockType = chunk.voxelMap[xCheck, yCheck, zCheck];
+
+        Debug.Log(blockType);
+        return Blocks.blockTypes[blockType].isSolid;
+    }
+
+
     // World generation algorithm
     public Blocks.BlockType GetVoxel(Vector3 pos)
     {
@@ -107,23 +131,33 @@ public class World : MonoBehaviour
         int terrainHeight = Mathf.FloorToInt(biome.terrainHeight * Noise.Get2DPerlin(new Vector2(pos.x, pos.z), 0, biome.terrainScale)) + biome.solidGroundHeight;
         Blocks.BlockType blockType = Blocks.BlockType.AIR;
 
-        if(yPos == terrainHeight) {
+        if (yPos == terrainHeight)
+        {
             blockType = Blocks.BlockType.GRASS;
-        } else if(yPos < terrainHeight && yPos > terrainHeight - 4) {
+        }
+        else if (yPos < terrainHeight && yPos > terrainHeight - 4)
+        {
             blockType = Blocks.BlockType.DIRT;
         }
-        else if(yPos > terrainHeight) {
+        else if (yPos > terrainHeight)
+        {
             return Blocks.BlockType.AIR;
-        } else {
+        }
+        else
+        {
             blockType = Blocks.BlockType.STONE;
         }
 
 
         /* SECOND PASS */
-        if(blockType == Blocks.BlockType.STONE) {
-            foreach(Lode lode in biome.lodes) {
-                if(yPos > lode.minHeight && yPos < lode.maxHeight) {
-                    if(Noise.Get3DPerlin(pos, lode.noiseOffset, lode.scale, lode.threshold)) {
+        if (blockType == Blocks.BlockType.STONE)
+        {
+            foreach (Lode lode in biome.lodes)
+            {
+                if (yPos > lode.minHeight && yPos < lode.maxHeight)
+                {
+                    if (Noise.Get3DPerlin(pos, lode.noiseOffset, lode.scale, lode.threshold))
+                    {
                         blockType = lode.blockType;
                     }
                 }
