@@ -16,7 +16,7 @@ namespace Boxophobic.StyledGUI
         public float down;
 
         MessageType mType;
-        bool enabled;
+        // bool enabled;
 
         public StyledMessageDrawer(string t, string m, float top, float down)
         {
@@ -71,11 +71,11 @@ namespace Boxophobic.StyledGUI
                         EditorGUILayout.HelpBox(message, mType);
                         //EditorGUI.HelpBox(new Rect(position.x, position.y + top, position.width, position.height), message, mType);
                         GUILayout.Space(down);
-                        enabled = true;
+                        // enabled = true;
                     }
                     else
                     {
-                        enabled = false;
+                        // enabled = false;
                     }
                 }
             }
@@ -84,7 +84,7 @@ namespace Boxophobic.StyledGUI
                 GUILayout.Space(top);
                 EditorGUILayout.HelpBox(message, mType);
                 GUILayout.Space(down);
-                enabled = true;
+                // enabled = true;
             }
         }
 

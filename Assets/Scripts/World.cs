@@ -30,7 +30,7 @@ public class World : MonoBehaviour
         Random.InitState(seed);
         GenerateWorld();
 
-        spawnPosition = new Vector3((VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f, VoxelData.ChunkHeight + 2f, (VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f);
+        spawnPosition = new Vector3((VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f, VoxelData.ChunkHeight, (VoxelData.WorldSizeInChunks * VoxelData.ChunkWidth) / 2f);
         player.transform.position = spawnPosition;
         playerLastChunkCoord = GetChunkCoordFromVector3(player.transform.position);
     }
@@ -93,7 +93,7 @@ public class World : MonoBehaviour
     }
 
 
-    public bool checkForVoxel(float x, float y, float z)
+    public bool CheckForVoxel(float x, float y, float z)
     {
         int xCheck = Mathf.FloorToInt(x);
         int yCheck = Mathf.FloorToInt(y);
@@ -109,7 +109,6 @@ public class World : MonoBehaviour
         var chunk = chunks[xChunk, zChunk];
         var blockType = chunk.voxelMap[xCheck, yCheck, zCheck];
 
-        Debug.Log(blockType);
         return Blocks.blockTypes[blockType].isSolid;
     }
 
