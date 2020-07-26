@@ -19,8 +19,8 @@ public class Player : MonoBehaviour
 
     private float horizontal;
     private float vertical;
-    private float mouseHorizontal;
-    private float mouseVertical;
+    public float mouseHorizontal;
+    public float mouseVertical;
     private float mouseSensitivity = 5.0f;
     private Vector3 velocity;
     private float verticalMomentum = 0;
@@ -39,14 +39,18 @@ public class Player : MonoBehaviour
         if (jumpRequest)
             Jump();
 
-        transform.Rotate(Vector3.up * mouseHorizontal * mouseSensitivity);
-        cam.Rotate(Vector3.right * -mouseVertical * mouseSensitivity);
         transform.Translate(velocity, Space.World);
     }
 
     private void Update()
     {
         GetPlayerInputs();
+    }
+
+    private void LateUpdate()
+    {
+        transform.Rotate(Vector3.up * mouseHorizontal * mouseSensitivity);
+        cam.Rotate(Vector3.right * -mouseVertical * mouseSensitivity);
     }
 
     void Jump()
@@ -90,6 +94,7 @@ public class Player : MonoBehaviour
     {
         horizontal = Input.GetAxis("Horizontal");
         vertical = Input.GetAxis("Vertical");
+
         mouseHorizontal = Input.GetAxis("Mouse X");
         mouseVertical = Input.GetAxis("Mouse Y");
 
@@ -108,10 +113,10 @@ public class Player : MonoBehaviour
         // if there is a solid voxel under the player
         // need to check 4 voxels around the player, as the player may be over 4 voxels at once
         if (
-            (world.CheckForVoxel(transform.position.x - playerWidthRadius, transform.position.y + downSpeed, transform.position.z - playerWidthRadius) && (!left && !back)) ||
-            (world.CheckForVoxel(transform.position.x + playerWidthRadius, transform.position.y + downSpeed, transform.position.z - playerWidthRadius) && (!right && !back)) ||
-            (world.CheckForVoxel(transform.position.x - playerWidthRadius, transform.position.y + downSpeed, transform.position.z + playerWidthRadius) && (!right && !front)) ||
-            (world.CheckForVoxel(transform.position.x + playerWidthRadius, transform.position.y + downSpeed, transform.position.z + playerWidthRadius) && (!left && !front))
+            (world.CheckForVoxel(new Vector3(transform.position.x - playerWidthRadius, transform.position.y + downSpeed, transform.position.z - playerWidthRadius)) && (!left && !back)) ||
+            (world.CheckForVoxel(new Vector3(transform.position.x + playerWidthRadius, transform.position.y + downSpeed, transform.position.z - playerWidthRadius)) && (!right && !back)) ||
+            (world.CheckForVoxel(new Vector3(transform.position.x - playerWidthRadius, transform.position.y + downSpeed, transform.position.z + playerWidthRadius)) && (!right && !front)) ||
+            (world.CheckForVoxel(new Vector3(transform.position.x + playerWidthRadius, transform.position.y + downSpeed, transform.position.z + playerWidthRadius)) && (!left && !front))
         )
         {
             isGrounded = true;
@@ -129,10 +134,10 @@ public class Player : MonoBehaviour
         // if there is a solid voxel under the player
         // need to check 4 voxels around the player, as the player may be over 4 voxels at once
         if (
-            (world.CheckForVoxel(transform.position.x - playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z - playerWidthRadius) && (!left && !back)) ||
-            (world.CheckForVoxel(transform.position.x + playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z - playerWidthRadius) && (!right && !back)) ||
-            (world.CheckForVoxel(transform.position.x - playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z + playerWidthRadius) && (!right && !front)) ||
-            (world.CheckForVoxel(transform.position.x + playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z + playerWidthRadius) && (!left && !front))
+            (world.CheckForVoxel(new Vector3(transform.position.x - playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z - playerWidthRadius)) && (!left && !back)) ||
+            (world.CheckForVoxel(new Vector3(transform.position.x + playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z - playerWidthRadius)) && (!right && !back)) ||
+            (world.CheckForVoxel(new Vector3(transform.position.x - playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z + playerWidthRadius)) && (!right && !front)) ||
+            (world.CheckForVoxel(new Vector3(transform.position.x + playerWidthRadius, transform.position.y + 2f + upSpeed, transform.position.z + playerWidthRadius)) && (!left && !front))
         )
         {
             verticalMomentum = 0; // set to 0 so the player falls when their head hits a block while jumping
@@ -149,8 +154,8 @@ public class Player : MonoBehaviour
         get
         {
             return
-                world.CheckForVoxel(transform.position.x, transform.position.y, transform.position.z + playerWidthRadius) ||   // check feet
-                world.CheckForVoxel(transform.position.x, transform.position.y + 1f, transform.position.z + playerWidthRadius); // check head
+                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y, transform.position.z + playerWidthRadius)) ||   // check feet
+                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z + playerWidthRadius)); // check head
         }
     }
 
@@ -159,8 +164,8 @@ public class Player : MonoBehaviour
         get
         {
             return
-                world.CheckForVoxel(transform.position.x, transform.position.y, transform.position.z - playerWidthRadius) ||   // check feet
-                world.CheckForVoxel(transform.position.x, transform.position.y + 1f, transform.position.z - playerWidthRadius); // check head
+                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y, transform.position.z - playerWidthRadius)) ||   // check feet
+                world.CheckForVoxel(new Vector3(transform.position.x, transform.position.y + 1f, transform.position.z - playerWidthRadius)); // check head
         }
     }
 
@@ -169,8 +174,8 @@ public class Player : MonoBehaviour
         get
         {
             return
-                world.CheckForVoxel(transform.position.x - playerWidthRadius, transform.position.y, transform.position.z) ||   // check feet
-                world.CheckForVoxel(transform.position.x - playerWidthRadius, transform.position.y + 1f, transform.position.z); // check head
+                world.CheckForVoxel(new Vector3(transform.position.x - playerWidthRadius, transform.position.y, transform.position.z)) ||   // check feet
+                world.CheckForVoxel(new Vector3(transform.position.x - playerWidthRadius, transform.position.y + 1f, transform.position.z)); // check head
         }
     }
 
@@ -179,8 +184,8 @@ public class Player : MonoBehaviour
         get
         {
             return
-                world.CheckForVoxel(transform.position.x + playerWidthRadius, transform.position.y, transform.position.z) ||   // check feet
-                world.CheckForVoxel(transform.position.x + playerWidthRadius, transform.position.y + 1f, transform.position.z); // check head
+                world.CheckForVoxel(new Vector3(transform.position.x + playerWidthRadius, transform.position.y, transform.position.z)) ||   // check feet
+                world.CheckForVoxel(new Vector3(transform.position.x + playerWidthRadius, transform.position.y + 1f, transform.position.z)); // check head
         }
     }
 

@@ -20,11 +20,21 @@ public class Chunk
 
     World world;
 
-    public Chunk(World world, ChunkCoord coord)
+    private bool _isActive;
+    public bool isVoxelMapPopulated = false;
+
+    public Chunk(World world, ChunkCoord coord, bool generateOnLoad)
     {
         this.world = world;
         this.coord = coord;
+        isActive = true;
 
+        if (generateOnLoad)
+            Init();
+    }
+
+    public void Init()
+    {
         chunkObject = new GameObject();
         meshFilter = chunkObject.AddComponent<MeshFilter>();
         meshRenderer = chunkObject.AddComponent<MeshRenderer>();
@@ -51,6 +61,7 @@ public class Chunk
                 }
             }
         }
+        isVoxelMapPopulated = true;
     }
 
     void CreateMeshData()
@@ -61,7 +72,7 @@ public class Chunk
             {
                 for (int z = 0; z < VoxelData.ChunkWidth; z++)
                 {
-                    if(Blocks.blockTypes[voxelMap[x, y, z]].isSolid)
+                    if (Blocks.blockTypes[voxelMap[x, y, z]].isSolid)
                         AddVoxelDataToChunk(new Vector3(x, y, z));
                 }
             }
@@ -70,8 +81,13 @@ public class Chunk
 
     public bool isActive
     {
-        get { return chunkObject.activeSelf; }
-        set { chunkObject.SetActive(value); }
+        get { return _isActive; }
+        set
+        {
+            _isActive = value;
+            if (chunkObject != null)
+                chunkObject.SetActive(value);
+        }
     }
 
     public Vector3 chunkPos
@@ -95,17 +111,27 @@ public class Chunk
         int y = Mathf.FloorToInt(voxelNeighborPos.y);
         int z = Mathf.FloorToInt(voxelNeighborPos.z);
 
-        Blocks.BlockType blockType;
         if (!IsVoxelInChunk(x, y, z))
         {
-            blockType = world.GetVoxel(voxelNeighborPos + chunkPos);
+            return world.CheckForVoxel(voxelNeighborPos + chunkPos);
         }
         else
         {
-            blockType = voxelMap[x, y, z];
+            var blockType = voxelMap[x, y, z];
+            return Blocks.blockTypes[blockType].isSolid;
         }
-        var blockData = Blocks.blockTypes[blockType];
-        return blockData.isSolid;
+    }
+
+    public Blocks.BlockType GetVoxelFomGLobalVector3(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int yCheck = Mathf.FloorToInt(pos.y);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        xCheck -= Mathf.FloorToInt(chunkObject.transform.position.x);
+        zCheck -= Mathf.FloorToInt(chunkObject.transform.position.z);
+
+        return voxelMap[xCheck, yCheck, zCheck];
     }
 
     void AddVoxelDataToChunk(Vector3 pos)
@@ -174,10 +200,25 @@ public struct ChunkCoord
     public int x;
     public int z;
 
+    // public ChunkCoord()
+    // {
+    //     x = 0;
+    //     z = 0;
+    // }
+
     public ChunkCoord(int x, int z)
     {
         this.x = x;
         this.z = z;
+    }
+
+    public ChunkCoord(Vector3 pos)
+    {
+        int xCheck = Mathf.FloorToInt(pos.x);
+        int zCheck = Mathf.FloorToInt(pos.z);
+
+        x = xCheck / VoxelData.ChunkWidth;
+        z = zCheck / VoxelData.ChunkWidth;
     }
 
     public override bool Equals(object obj)
